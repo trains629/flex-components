@@ -1,0 +1,22 @@
+{
+  "name": "@trains629/flex-components",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "repository": "https://github.com/trains629/flex-components.git",
+  "author": "trains629",
+  "license": "MIT",
+  "dependencies": {
+    "@trains629/flex-base": "^1.0.0",
+    "@trains629/flex-core": "^1.0.0",
+    "classnames": "^2.2.6",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "scripts": {
+    "build:filed": "esbuild ./src/views/Filed.js --bundle '--define:process.env.NODE_ENV=\"production\"' --target=es6 --outfile=./lib/filed.js --format=esm",
+    "build:cantainer": "esbuild ./src/views/Cantainer.js --bundle '--define:process.env.NODE_ENV=\"production\"' --target=es6 --outfile=./lib/cantainer.js --format=esm",
+    "build:code": "esbuild ./src/index.js --bundle '--define:process.env.NODE_ENV=\"production\"' --target=es6 --loader:.js=jsx --outfile=./lib/index.js --format=esm --external:classnames --external:react --external:react-dom --external:@trains629/flex-core --external:@trains629/flex-base",
+    "build:view": "yarn run build:filed && yarn run build:cantainer",
+    "build": "yarn run build:view && yarn run build:code"
+  }
+}
