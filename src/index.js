@@ -1,11 +1,14 @@
-import Form1 from "./components/Form/index";
-import Cantainer1 from "./components/Cantainer/index";
+import Form from "./components/Form/index";
+import Cantainer from "./components/Cantainer/index";
+import * as Button from "./components/Button/index";
 
-export const Form = Form1;
-export const Cantainer = Cantainer1;
+function addComponent(ComponentStore) {
+  ComponentStore.addComponent("Form",Form);
+  ComponentStore.addComponent("Cantainer",Cantainer);
+  ComponentStore.addComponent("Field",Form);
+  ComponentStore.addComponent("Button",Button);
+}
 
-export default function (ComponentStore) {
-  ComponentStore.addComponent("Form",Form1);
-  ComponentStore.addComponent("Cantainer",Cantainer1);
-  ComponentStore.addComponent("Field",Form1);
+export {
+  Form,Cantainer,Button, addComponent as default
 }

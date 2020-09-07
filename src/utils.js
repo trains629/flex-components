@@ -2,7 +2,7 @@ import React from 'react';
 import * as FormKind from "./components/Form/FormKind";
 import {useFormInput} from "@trains629/flex-core";
 
-function getAttribute(props){
+export function getAttribute(props){
   let {children} = props;
   if(!children)return {};
   let {attribute} = children;

@@ -14,6 +14,7 @@ const Text= FormInputComponent(Form.TextBox,"textarea");
 
 export default {
     String,ID,Int,Float,Boolean,Date,DateTime,Text,
+    "Select":FormInputComponent(Form.SelectBox),
     RadioDropdown : FormInputComponent(Form.DropdownList,"boolean"),
     CheckDropdown : FormInputComponent(Form.DropdownList,"boolean"),
     RadioList : FormInputComponent(Form.InputList,"boolean"),
