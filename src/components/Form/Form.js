@@ -1,74 +1,35 @@
-import React,{createElement,useState} from 'react';
+import React,{useState} from 'react';
 import Input from "./Input";
 import InputGroupList from "../InputGroupList"
 import classNames from "classnames";
 import Text from "./Text";
 import {Dropdown} from "@trains629/flex-base";
 import {useFlexContext} from "@trains629/flex-core";
+import { FormGroup, FormCaption,getInvalidClass } from "./FormGroup";
 
 function isEditMode(FlexMode){
   return FlexMode === "edit";
 }
 
-export function Description({children}){
-  if(!children)return null;
-  // 将字符串分解
-  function parse(str){
-    let reg = /\{\{\s+(.*?)\s+\}\}/g
-    let count = 2;
-    return str.split(reg).map((item,index,arr)=>{
-      return index % count <= 0 ? item : 
-        createElement(item,{key:`br${index}_${arr[index-1].length}`});
-    })
-  }
-  
-  let list = parse(children)
-  return <p className={classNames("help")}>{list}</p>;
-}
-
-export function FormCaption(props){
-  let {children,notNull,className="label"} = props;
-  return <label className={className}>{children}
-    {notNull?<span className="has-text-danger">*</span>:null}
-  </label>;
-}
-
-export function FormGroup(props){
-  let {children,className,description,caption,invalid} = props;
-  return (<div className={classNames("field",className)}>
-    {caption ? <FormCaption>{caption}</FormCaption>: null}
-    <div className="control">{children}</div>
-    {invalid ? <p className={classNames("help","is-danger")} key={"invalid"}>{invalid}</p>:null}
-    <Description key="description">{description}</Description>
-  </div>)
-}
-
-function getInvalidClass(invalidStr){
-  return {"is-danger":invalidStr?true:false};
-}
-
 export function CheckBox(props){
-  let {className,caption,description,type,notNull,invalidStr} = props;    
-  return <FormGroup description={description} invalid={invalidStr}>
-    <FormCaption key={type} className={classNames("checkbox",getInvalidClass(invalidStr))} 
-      notNull={notNull}>
-      <Input {...props} type="checkbox" className={className} />
+  let {caption,description,notNull,invalidStr} = props;    
+  return <FormGroup description={description} invalid={invalidStr} notNull={notNull}
+    captionClass={"checkbox"} caption={<>
+      <Input {...props} type="checkbox" />
       {caption}
-    </FormCaption>
-  </FormGroup>;
+    </>}
+  />;
 }
 
 // 为什么就没加这个组件呢？ options 是数组或者是函数返回列表
 // 如果是字符串，应该执行已不函数去读取列表
 export function SelectBox(props) {
-  let {className,caption,description,type,notNull,invalidStr,options,
-    value,setValue:setV} = props;
-  className = classNames(className,"input",getInvalidClass(invalidStr));
+  let {caption,description,notNull,invalidStr,options,value,setValue:setV} = props;
   const [state, setstate] = useState(value);
   let list = Array.isArray(options)?options : (typeof options === "function"?
    options():null);
-  return <FormGroup description={description} invalid={invalidStr}>
-    <FormCaption key={type} notNull={notNull}>{caption}</FormCaption>
+  return <FormGroup description={description} invalid={invalidStr} 
+    notNull={notNull} caption={caption}>
     <div className="select">
       <select value={state} onChange={(e)=>{
         let {value} = e.target;
@@ -83,19 +44,19 @@ export function SelectBox(props) {
 }
 
 export function TextBox(props){
-  let {className,caption,description,type,notNull,invalidStr} = props;
+  let {className,caption,description,notNull,invalidStr} = props;
   className = classNames(className,"textarea",getInvalidClass(invalidStr));
-  return <FormGroup description={description} invalid={invalidStr}>
-    <FormCaption key={type} notNull={notNull}>{caption}</FormCaption>
+  return <FormGroup description={description} invalid={invalidStr} notNull={notNull}
+    caption={caption}>
     <Text {...props} className={className} />
   </FormGroup>;
 }
 
 export function InputBox(props){
-  let {className,caption,description,type,notNull,invalidStr} = props;
+  let {className,caption,description,notNull,invalidStr} = props;
   className = classNames(className,"input",getInvalidClass(invalidStr));
-  return <FormGroup description={description} invalid={invalidStr}>
-    <FormCaption key={type} notNull={notNull}>{caption}</FormCaption>
+  return <FormGroup description={description} invalid={invalidStr} notNull={notNull}
+    caption={caption}>
     <Input {...props} className={className} />
   </FormGroup>;
 }
@@ -121,8 +82,8 @@ export function DropdownList(props){
   if(!isEditMode(FlexMode))
     value = initListValue(value,list,setValue);
   
-  return <FormGroup description={description} invalid={invalidStr}>
-    <FormCaption key={type} notNull={notNull}>{caption}</FormCaption>
+  return <FormGroup description={description} invalid={invalidStr}  notNull={notNull}
+    caption={caption}>
     <InputGroupList {...props} readOnly={true} type={options.type}
       className={classNames(className,getInvalidClass(invalidStr))}
       value={value || list} key={key}
@@ -152,8 +113,8 @@ export function InputList(props){
     value.forEach((item) =>keys.push(item.value ? 1:0));
   }
   
-  return <FormGroup description={description} key={value ? keys.join("") : key}>
-    <FormCaption key={type} notNull={notNull}>{caption}</FormCaption>
+  return <FormGroup description={description} key={value ? keys.join("") : key}
+    notNull={notNull} caption={caption}>
     {list.map((item,i)=>{
       let {caption,type,selected} = item;
       let args = {type,className:"form-check-input"};
@@ -193,8 +154,8 @@ export function InputList(props){
 
 export function RangeBox(props){
   let {className,caption,description,type,notNull,invalidStr} = props;
-  return <FormGroup description={description} invalid={invalidStr}>
-    <FormCaption key={type} notNull={notNull}>{caption}</FormCaption>
+  return <FormGroup description={description} invalid={invalidStr} notNull={notNull}
+    caption={caption}>
     <Input {...props} type="range" className={classNames(className,
       getInvalidClass(invalidStr))} />
   </FormGroup>;
@@ -209,8 +170,8 @@ export function CheckGroup(props){
     list = info ? info["list"] || [] : list;
   }
     
-  return <FormGroup description={description}>
-    <FormCaption key={type} notNull={notNull}>{caption}</FormCaption>
+  return <FormGroup description={description} invalid={invalidStr} notNull={notNull} 
+    caption={caption}>
     {list.map((item,i)=>{
       let {caption,type,selected} = item;
       let args = {type,className:"form-check-input","onChange":(e)=>{}};

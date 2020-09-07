@@ -1,32 +1,40 @@
 import React from 'react';
 import classNames from "classnames";
 
-/**
- * 现在的输入框一般有两种模式，左右分栏，上下分栏
- */
-
-// 行列模式
-
-function FormGroupRow(props){
-  let {caption,children,className} = props;
-  return (<div className={classNames("form-group","row",className)}>
-    <label className="col-sm-2 col-form-label">{caption}</label>
-    <div className="col-sm-10">{children}</div>
-  </div>);
+export function getInvalidClass(invalidStr){
+  return {"is-danger":invalidStr?true:false};
 }
 
-// 上下模式
+export function Description({children}){
+  if(!children)return null;
+  // 将字符串分解
+  function parse(str){
+    let reg = /\{\{\s+(.*?)\s+\}\}/g
+    let count = 2;
+    return str.split(reg).map((item,index,arr)=>{
+      return index % count <= 0 ? item : 
+        createElement(item,{key:`br${index}_${arr[index-1].length}`});
+    })
+  }
+  
+  let list = parse(children)
+  return <p className={classNames("help")}>{list}</p>;
+}
 
-function FormGroupUp(props){
-  let {caption,children,className} = props;
-  return (<div class={classNames("form-group",className)}>
-    <label>{caption}</label>
-    {children}
+export function FormCaption(props){
+  let {children,notNull,className="label"} = props;
+  return <label className={className}>{children}
+    {notNull?<span className="has-text-danger">*</span>:null}
+  </label>;
+}
+
+export function FormGroup(props){
+  let {children,className,description,caption,invalid,notNull,captionClass} = props;
+  return (<div className={classNames("field",className)}>
+    {caption ? <FormCaption notNull={notNull} className={captionClass}>
+      {caption}</FormCaption>: null}
+    <div className="control">{children}</div>
+    {invalid ? <p className={classNames("help","is-danger")}>{invalid}</p>:null}
+    <Description key="description">{description}</Description>
   </div>)
-}
-
-export default function FormGroup(props){
-  let {children,kind} = props;
-  let Group = kind ==="row" ? FormGroupRow :FormGroupUp;
-  return <Group {...props}>{children}</Group>;
 }
